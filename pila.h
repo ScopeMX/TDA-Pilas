@@ -3,7 +3,7 @@
 
 struct pilas
 {
-	int elementos_pila[100];
+	int elementos_pila[200];
 	int ultimo_agregado;
 }
 
