@@ -8,8 +8,9 @@ struct pilas
 }
 
 typedef struct pilas Pila;
-
-int pop(Pila *, int);//Devuelve si funciono o no.
-int push(Pila *);//Devuelve el último elemento que tenga la pila.
+//Función que saca el último elemento de la pila
+int pop(Pila *, int);//Devuelve el último elemento que tenga la pila.
+//Función que mete un elemento a la pila
+int push(Pila *);//Devuelve si funciono o no.
 
 #endif
