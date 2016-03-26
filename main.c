@@ -5,23 +5,29 @@
 int main(int argc, char const *argv[])
 {
 	Pila validar;
-	FILE *archivo = NULL;
-	char caracter = ' ';
+	FILE *archivo_html = NULL;
+	int archivo_validado = 0;
+	int error = 0;
 
 	validar.ultimo_agregado=0;
 
-	archivo = fopen(argv[1], "r");
-	if(archivo == NULL){
+	archivo_html = fopen(argv[1], "r");
+	if(archivo_html == NULL){
 		printf("%s\n", "Error al abrir el archivo");
 		exit(0);
 	}
 
-	while(feof(archivo)==0){
-		caracter = fgetc(archivo);
-		printf("%c", caracter);
+	error = almacenar_documento_html(archivo_html, &validar);
+	error = validar_documento_html(&validar);
+
+	if(error == 1){
+		printf("%s\n", "OK");
+	}
+	else{
+		printf("%s\n", "html invalido");
 	}
 
-	fclose(archivo);
+	fclose(archivo_html);
 
 	return 0;
 }
