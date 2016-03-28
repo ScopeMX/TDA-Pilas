@@ -4,9 +4,9 @@
 #include <ctype.h>
 #include "pila.h"
 
-int numero_de_etiquetas = 120;
+int numero_de_etiquetas = 121;
 
-Etiqueta etiquetas_html[120];
+Etiqueta etiquetas_html[121];
 
 char caracter_auxiliar = ' ';
 char cadena_auxiliar[15];
@@ -19,6 +19,28 @@ int contador = 0;
 int unica = 0;
 int cerrando_etiqueta = 0;
 
+void iniciar_etiquetas(){
+	FILE * archivo_etiquetas = NULL;
+	char buffer[20];
+	int i =0;
+
+	archivo_etiquetas = fopen("etiquetas_html.txt", "r");
+	if(archivo_etiquetas == NULL){
+		printf("%s\n", "Error al abrir el archivo de las etiquetas html.");
+		exit(0);
+	}
+
+	while(feof(archivo_etiquetas) == 0){
+		fscanf(archivo_etiquetas, "%s", buffer);
+		strcat(etiquetas_html[i].etiqueta, strtok(buffer,","));
+		if((strtok(buffer,",")+1) > 0){
+			etiquetas_html[i].unico = atoi((strtok(buffer,",")+1));
+		}
+		i++;
+	}
+}
+
+/*
 void iniciar_etiquetas(){
 	 strcat(etiquetas_html[0].etiqueta, "!doctype");
 	 etiquetas_html[0].unico = 2;
@@ -163,6 +185,7 @@ void iniciar_etiquetas(){
 	 strcat(etiquetas_html[118].etiqueta, "video");
 	 strcat(etiquetas_html[119].etiqueta, "wbr");
 }
+*/
 //etiquetas_html[1].etiqueta = "a";
 
 //Función que mete elementos a la pila
