@@ -20,14 +20,14 @@ int main(int argc, char const *argv[])
 	error = almacenar_documento_html(archivo_html, &validar);
 	error = validar_documento_html(&validar);
 
+	fclose(archivo_html);
+
 	if(error == 1){
 		printf("%s\n", "OK");
 	}
 	else{
 		printf("%s\n", "html invalido");
 	}
-
-	fclose(archivo_html);
-
+	
 	return 0;
 }
