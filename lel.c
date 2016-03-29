@@ -2,8 +2,8 @@
 #include <string.h>
 
 int main(){
-    char lel[10] = "";
-    char lol[10] = "------";
-    printf("%d\n", strncmp(lel, lol,6));
+    char lel[10] = "p/";
+    char lol[10] = "p";
+    printf("%d\n", strncmp(lel, lol,1));
     return 0;
 }
