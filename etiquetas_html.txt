@@ -1,4 +1,4 @@
-!document-html,2
+!doctype-html,2
 a,0
 abrr,0
 acronym,0

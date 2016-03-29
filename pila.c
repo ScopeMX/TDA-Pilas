@@ -79,36 +79,46 @@ int almacenar_documento_html(FILE * archivo_html, Pila * A){
 					}
 					cadena_auxiliar[caracteres_almacenados] = caracter_auxiliar;
 					caracteres_almacenados++;
+					if(caracteres_almacenados == 3 && strncmp(cadena_auxiliar, "!--", caracteres_almacenados) == 0){
+						id_etiqueta = encontrar_etiqueta(cadena_auxiliar, caracteres_almacenados);
+						unica = es_unica();
+						cadena_auxiliar[0] = ' ';
+						cadena_auxiliar[1] = ' ';
+						cerrando_etiqueta = 1;
+						caracteres_almacenados = 0;
+					}
 				}
 				else{
-					if(caracteres_almacenados > 0){
-						id_etiqueta = encontrar_etiqueta(cadena_auxiliar, caracteres_almacenados);
-						//if(id_etiqueta < 0){push(A, 1000);}
-						unica = es_unica();
-						if(caracter_auxiliar == '>'){
-							error = guardar(A);
-						}
-						else{
-							cerrando_etiqueta = 1;
-							caracteres_almacenados = 0;
-						}
+					if(strncmp(cadena_auxiliar, "!doctype", caracteres_almacenados) == 0 && caracteres_almacenados > 0){
+						cadena_auxiliar[caracteres_almacenados] = '-';
+						caracteres_almacenados++;
 					}
-					else{apertura_encontrada = 0;}
+					else{
+						if(caracteres_almacenados > 0){
+							id_etiqueta = encontrar_etiqueta(cadena_auxiliar, caracteres_almacenados);
+							unica = es_unica();
+							if(caracter_auxiliar == '>'){
+								error = guardar(A);
+							}
+							else{
+								cerrando_etiqueta = 1;
+								caracteres_almacenados = 0;
+							}
+						}
+						else{apertura_encontrada = 0;}
+					}
 				}
 			}
 			else{
-				if(caracter_auxiliar == '>' || caracter_auxiliar == '/'){
-					cadena_auxiliar[caracteres_almacenados] = caracter_auxiliar;
-					caracteres_almacenados++;
-					if(caracter_auxiliar == '>'){
-						error = guardar(A);
-					}
-				}
+				cerrar_etiqueta(A);
 			}
 		}
 		if(apertura_encontrada == 0){
 			apertura_encontrada = encontrar_apertura(caracter_auxiliar);
 		}
+	}
+	if(cerrando_etiqueta == 1){
+		error = guardar(A);
 	}
 	return 0;
 }
@@ -128,7 +138,18 @@ int encontrar_etiqueta(char * cadena, int limite){
 	for(i = 0; i < numero_de_etiquetas; i++){
 		cadena_encontrada = strncmp(cadena, etiquetas_html[i].etiqueta, limite);
 		if(cadena_encontrada == 0){
-			return i+1;
+			if(i+1 == 121){
+				cadena_encontrada = strncmp(cadena, etiquetas_html[i].etiqueta, 3);
+				if(cadena_encontrada == 0){
+					return i+1;
+				}
+				else{
+					return -1;
+				}
+			}
+			else{
+				return i+1;
+			}
 		}
 	}
 	return -1;
@@ -150,6 +171,9 @@ int es_unica(){
 	if(etiquetas_html[id_etiqueta-1].unico == 2){
 		return 2;
 	}
+	if(etiquetas_html[id_etiqueta-1].unico == 3){
+		return 3;
+	}
 	return 0;
 }
 
@@ -168,29 +192,49 @@ int validar_cierre_etiqueta(){
 			return 1;
 		}
 	}
-	else{
+	if(unica == 0){
 		if(caracter_auxiliar == '>' && strncmp(cadena_auxiliar, "/>", caracteres_almacenados)){
 			return 1;
 		}
 	}
 	if(unica == 2){
-		if(strncmp(cadena_auxiliar, ">", caracteres_almacenados) == 0){
+		if(caracter_auxiliar == '>'){
+			return 1;
+		}
+	}
+	if(unica == 3){
+		if(strncmp(cadena_auxiliar, "-->", caracteres_almacenados) == 0){
 			return 1;
 		}
 	}
 	return -1;
 }
 
+int cerrar_etiqueta(Pila * A){
+	if(caracter_auxiliar == '>' || caracter_auxiliar == '/' || caracter_auxiliar == '-'){
+		if(strncmp(cadena_auxiliar, "--", caracteres_almacenados+1) != 0){
+			cadena_auxiliar[caracteres_almacenados] = caracter_auxiliar;
+			caracteres_almacenados++;
+		}
+		if(caracter_auxiliar == '>'){
+			error = guardar(A);
+		}
+	}
+	return 1;
+}
+
+
 int guardar(Pila * A){
 	error = validar_cierre_etiqueta();
 	if(error != 1){
+		error = push(A, 1000);
 		return 0;
 	}
 	if(contador > 0){
 		id_etiqueta = id_etiqueta * -1;
 	}
 	error = push(A, id_etiqueta);
-	if(unica == 1 || unica == 2){
+	if(unica == 1 || unica == 2 || unica == 3){
 		error = push(A, id_etiqueta * -1);
 	}
 	reiniciar_variables();

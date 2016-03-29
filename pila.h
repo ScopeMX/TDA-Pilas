@@ -34,4 +34,6 @@ int es_unica();
 
 int validar_documento_html(Pila *);
 
+int cerrar_etiqueta(Pila *);
+
 #endif
