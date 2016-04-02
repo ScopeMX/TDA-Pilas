@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include "pila.h"
 
-//funcion que mete elementos a la pila
+// funcion que mete elementos a la pila
 int
 push(Pila * A, int elemento)
 {
-	if(A == NULL){
+	if (A == NULL) {
 		return -1;
 	}
 	A->elementos_pila[A->ultimo_agregado] = elemento;
@@ -17,7 +17,7 @@ push(Pila * A, int elemento)
 int
 pop(Pila * A)
 {
-	if(A == NULL){
+	if (A == NULL) {
 		return -1;
 	}
 	A->ultimo_agregado--;

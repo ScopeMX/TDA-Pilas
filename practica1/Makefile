@@ -12,4 +12,4 @@ validar_html.o: validar_html.c
 	gcc -c validar_html.c -o validar_html.o
 
 clean:
-	rm main.o pila.o
+	rm main.o pila.o validar_html.o
